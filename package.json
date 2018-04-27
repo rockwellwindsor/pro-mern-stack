@@ -1,0 +1,25 @@
+{
+  "name": "pro-mern-stack",
+  "version": "1.0.0",
+  "description": "Sample application from the book Pro MERN Stack by Vasan Subramanian",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Mern",
+    "React",
+    "MongoDB",
+    "ExpressJS",
+    "NodeJS"
+  ],
+  "author": "Rockwell Windsor Rice",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react": "^6.24.1"
+  }
+}
