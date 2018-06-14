@@ -1,16 +1,16 @@
-'use strict'
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
-const Issue = require('./issue.js');
+import SourceMapSupport from 'source-map-support';
+SourceMapSupport.install();
+import 'babel-polyfill';
+
+import express from 'express';
+import bodyParser from 'body-parser';
+import { MongoClient } from 'mongodb';
+import Issue from './issue.js';
 
 const app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
-
-var favicon = require('serve-favicon');
-app.use(favicon('./assets/img/favicon.png'));
 
 app.get('/api/issues', (req, res) => {
   db.collection('issues').find().toArray().then(issues => {
@@ -28,7 +28,7 @@ app.post('/api/issues', (req, res) => {
   if (!newIssue.status)
     newIssue.status = 'New';
 
-  const err = Issue.validateIssue(newIssue)
+  const err = Issue.validateIssue(newIssue);
   if (err) {
     res.status(422).json({ message: `Invalid request: ${err}` });
     return;
