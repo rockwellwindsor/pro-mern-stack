@@ -6,6 +6,10 @@ var _sourceMapSupport2 = _interopRequireDefault(_sourceMapSupport);
 
 require('babel-polyfill');
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -25,48 +29,52 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _sourceMapSupport2.default.install();
 
 
-var app = (0, _express2.default)();
+const app = (0, _express2.default)();
 app.use(_express2.default.static('static'));
 app.use(_bodyParser2.default.json());
 
-app.get('/api/issues', function (req, res) {
-  db.collection('issues').find().toArray().then(function (issues) {
-    var metadata = { total_count: issues.length };
+let db;
+_mongodb.MongoClient.connect('mongodb://localhost/issuetracker').then(connection => {
+  db = connection;
+  app.listen(3000, () => {
+    console.log('App started on port 3000');
+  });
+}).catch(error => {
+  console.log('ERROR:', error);
+});
+
+app.get('/api/issues', (req, res) => {
+  const filter = [];
+  if (req.query.status) filter.status = req.query.status;
+  db.collection('issues').find().toArray().then(issues => {
+    const metadata = { total_count: issues.length };
     res.json({ _metadata: metadata, records: issues });
-  }).catch(function (error) {
+  }).catch(error => {
     console.log(error);
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+    res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
 
-app.post('/api/issues', function (req, res) {
-  var newIssue = req.body;
+app.post('/api/issues', (req, res) => {
+  const newIssue = req.body;
   newIssue.created = new Date();
   if (!newIssue.status) newIssue.status = 'New';
 
-  var err = _issue2.default.validateIssue(newIssue);
+  const err = _issue2.default.validateIssue(newIssue);
   if (err) {
-    res.status(422).json({ message: 'Invalid request: ' + err });
+    res.status(422).json({ message: `Invalid request: ${err}` });
     return;
   }
 
-  db.collection('issues').insertOne(newIssue).then(function (result) {
-    return db.collection('issues').find({ _id: result.insertedId }).limit(1).next();
-  }).then(function (newIssue) {
+  db.collection('issues').insertOne(newIssue).then(result => db.collection('issues').find({ _id: result.insertedId }).limit(1).next()).then(newIssue => {
     res.json(newIssue);
-  }).catch(function (error) {
+  }).catch(error => {
     console.log(error);
-    res.status(500).json({ message: 'Internal Server Error: ' + error });
+    res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
 
-var db = void 0;
-_mongodb.MongoClient.connect('mongodb://localhost/issuetracker').then(function (connection) {
-  db = connection;
-  app.listen(3000, function () {
-    console.log('App started on port 3000');
-  });
-}).catch(function (error) {
-  console.log('ERROR:', error);
+app.get('*', (req, res) => {
+  res.sendFile(_path2.default.resolve('static/index.html'));
 });
 //# sourceMappingURL=server.js.map
