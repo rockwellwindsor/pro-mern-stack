@@ -68,7 +68,7 @@ export default class IssueFilter extends React.Component {
   render() {
     return (
       <div>
-        Status:
+        Status:&nbsp;&nbsp;
         <select className="custom-select" value={this.state.status} onChange={this.onChangeStatus}>
           <option value="" disabled>Select a status</option>
           <option value="New">New</option>
@@ -78,7 +78,7 @@ export default class IssueFilter extends React.Component {
           <option value="Verified">Verified</option>
           <option value="Closed">Closed</option>
         </select>
-        &nbsp;Effort between:
+        &nbsp;Effort between:&nbsp;&nbsp;
         <input size={5} value={this.state.effort_gte} onChange={this.onChangeEffortGte} />
         &nbsp;-&nbsp;
         <input size={5} value={this.state.effort_lte} onChange={this.onChangeEffortLte} />

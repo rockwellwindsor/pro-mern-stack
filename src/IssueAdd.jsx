@@ -23,11 +23,15 @@ export default class IssueAdd extends React.Component {
     return (
       <div>
         <form name="issueAdd" onSubmit={this.handleSubmit}>
-          <input type="text" name="owner" placeholder="Owner" />
-          <input type="text" name="title" placeholder="Title" />
-          <button>Add</button>
+          <input type="text" name="owner" placeholder="Owner" />&nbsp;&nbsp;
+          <input type="text" name="title" placeholder="Title" />&nbsp;&nbsp;
+          <button className="btn btn-warning">Add</button>
         </form>
       </div>
-    )
+    );
   }
 }
+
+IssueAdd.propTypes = {
+  createIssue: React.PropTypes.func.isRequired,
+};
